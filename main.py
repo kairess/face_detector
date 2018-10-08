@@ -35,6 +35,8 @@ def overlay_transparent(background_img, img_to_overlay_t, x, y, overlay_size=Non
 
   return bg_img
 
+face_roi = []
+
 while True:
   ret, img = cap.read()
   if not ret:
@@ -42,15 +44,23 @@ while True:
 
   img = cv2.resize(img, (int(img.shape[1] * scaler), int(img.shape[0] * scaler)))
 
-  faces = detector(img, 1)
+  if len(face_roi) == 0:
+    faces = detector(img, 1)
+  else:
+    roi_img = img[face_roi[0]:face_roi[1], face_roi[2]:face_roi[3]]
+    cv2.imshow('roi', roi_img)
+    faces = detector(roi_img)
 
   if len(faces) == 0:
     print('no faces!')
 
   for face in faces:
-    dlib_shape = predictor(img, face)
-    
-    shape_2d = np.array([[p.x, p.y] for p in dlib_shape.parts()])
+    if len(face_roi) == 0:
+      dlib_shape = predictor(img, face)
+      shape_2d = np.array([[p.x, p.y] for p in dlib_shape.parts()])
+    else:
+      dlib_shape = predictor(roi_img, face)
+      shape_2d = np.array([[p.x + face_roi[2], p.y + face_roi[0]] for p in dlib_shape.parts()])
 
     for s in shape_2d:
       cv2.circle(img, tuple(s), 1, (255, 255, 255), 2, cv2.LINE_AA)
@@ -66,6 +76,9 @@ while True:
 
     # compute face size
     face_size = max(max_coords - min_coords)
+
+    face_roi = np.array([min_coords[1] - face_size, max_coords[1] + face_size, min_coords[0] - face_size, max_coords[0] + face_size])
+    face_roi = np.clip(face_roi, 0, 10000)
 
     # draw overlay on face
     img = overlay_transparent(img, overlay, center_x, center_y, overlay_size=(face_size, face_size))
