@@ -80,7 +80,7 @@ while True:
     face_sizes.append(face_size)
     if len(face_sizes) > 10:
       del face_sizes[0]
-    mean_face_size = np.mean(face_sizes)
+    mean_face_size = int(np.mean(face_sizes))
 
     face_roi = np.array([min_coords[1] - face_size, max_coords[1] + face_size, min_coords[0] - face_size, max_coords[0] + face_size])
     face_roi = np.clip(face_roi, 0, 10000)
