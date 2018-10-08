@@ -36,6 +36,7 @@ def overlay_transparent(background_img, img_to_overlay_t, x, y, overlay_size=Non
   return bg_img
 
 face_roi = []
+face_sizes = []
 
 while True:
   ret, img = cap.read()
@@ -76,12 +77,16 @@ while True:
 
     # compute face size
     face_size = max(max_coords - min_coords)
+    face_sizes.append(face_size)
+    if len(face_sizes) > 10:
+      del face_sizes[0]
+    mean_face_size = np.mean(face_sizes)
 
     face_roi = np.array([min_coords[1] - face_size, max_coords[1] + face_size, min_coords[0] - face_size, max_coords[0] + face_size])
     face_roi = np.clip(face_roi, 0, 10000)
 
     # draw overlay on face
-    img = overlay_transparent(img, overlay, center_x, center_y, overlay_size=(face_size, face_size))
+    img = overlay_transparent(img, overlay, center_x, center_y, overlay_size=(mean_face_size, mean_face_size))
 
   cv2.imshow('img', img)
   if cv2.waitKey(1) == ord('q'):
