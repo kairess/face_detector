@@ -10,7 +10,7 @@ predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
 # load video
 cap = cv2.VideoCapture('samples/girl.mp4')
 # load overlay image
-overlay = cv2.imread('samples/circle.png', cv2.IMREAD_UNCHANGED)
+overlay = cv2.imread('samples/ryan_transparent.png', cv2.IMREAD_UNCHANGED)
 
 # overlay function
 def overlay_transparent(background_img, img_to_overlay_t, x, y, overlay_size=None):
@@ -57,7 +57,7 @@ while True:
     faces = detector(img, 1)
   else:
     roi_img = img[face_roi[0]:face_roi[1], face_roi[2]:face_roi[3]]
-    cv2.imshow('roi', roi_img)
+    # cv2.imshow('roi', roi_img)
     faces = detector(roi_img)
 
   # no faces
@@ -92,14 +92,14 @@ while True:
     face_sizes.append(face_size)
     if len(face_sizes) > 10:
       del face_sizes[0]
-    mean_face_size = int(np.mean(face_sizes))
+    mean_face_size = int(np.mean(face_sizes) * 1.8)
 
     # compute face roi
     face_roi = np.array([int(min_coords[1] - face_size / 2), int(max_coords[1] + face_size / 2), int(min_coords[0] - face_size / 2), int(max_coords[0] + face_size / 2)])
     face_roi = np.clip(face_roi, 0, 10000)
 
     # draw overlay on face
-    img = overlay_transparent(img, overlay, center_x, center_y, overlay_size=(mean_face_size, mean_face_size))
+    img = overlay_transparent(img, overlay, center_x + 8, center_y - 25, overlay_size=(mean_face_size, mean_face_size))
 
   # visualize
   cv2.imshow('img', img)
