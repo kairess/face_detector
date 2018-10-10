@@ -74,7 +74,7 @@ while True:
       shape_2d = np.array([[p.x + face_roi[2], p.y + face_roi[0]] for p in dlib_shape.parts()])
 
     for s in shape_2d:
-      cv2.circle(img, center=tuple(s), radius=1, color=(255, 255, 255), thickness=2, lineType=cv2.LINE_AA)
+      cv2.circle(img, center=tuple(s), radius=1, color=(255, 255, 255), thickness=1, lineType=cv2.LINE_AA)
 
     # compute face center
     center_x, center_y = np.mean(shape_2d, axis=0).astype(np.int)
@@ -84,8 +84,8 @@ while True:
     max_coords = np.max(shape_2d, axis=0)
 
     # draw min, max coords
-    cv2.circle(img, center=tuple(min_coords), radius=1, color=(255, 0, 0), thickness=2, lineType=cv2.LINE_AA)
-    cv2.circle(img, center=tuple(max_coords), radius=1, color=(255, 0, 0), thickness=2, lineType=cv2.LINE_AA)
+    cv2.circle(img, center=tuple(min_coords), radius=1, color=(255, 0, 0), thickness=1, lineType=cv2.LINE_AA)
+    cv2.circle(img, center=tuple(max_coords), radius=1, color=(255, 0, 0), thickness=1, lineType=cv2.LINE_AA)
 
     # compute face size
     face_size = max(max_coords - min_coords)
@@ -99,7 +99,7 @@ while True:
     face_roi = np.clip(face_roi, 0, 10000)
 
     # draw overlay on face
-    img = overlay_transparent(img, overlay, center_x + 8, center_y - 25, overlay_size=(mean_face_size, mean_face_size))
+    # img = overlay_transparent(img, overlay, center_x + 8, center_y - 25, overlay_size=(mean_face_size, mean_face_size))
 
   # visualize
   cv2.imshow('img', img)
