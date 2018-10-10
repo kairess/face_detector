@@ -51,6 +51,7 @@ while True:
 
   # resize frame
   img = cv2.resize(img, (int(img.shape[1] * scaler), int(img.shape[0] * scaler)))
+  ori = img.copy()
 
   # find faces
   if len(face_roi) == 0:
@@ -99,9 +100,11 @@ while True:
     face_roi = np.clip(face_roi, 0, 10000)
 
     # draw overlay on face
-    img = overlay_transparent(img, overlay, center_x + 8, center_y - 25, overlay_size=(mean_face_size, mean_face_size))
+    result = overlay_transparent(ori, overlay, center_x + 8, center_y - 25, overlay_size=(mean_face_size, mean_face_size))
 
   # visualize
-  cv2.imshow('img', img)
+  cv2.imshow('original', ori)
+  cv2.imshow('facial landmarks', img)
+  cv2.imshow('result', result)
   if cv2.waitKey(1) == ord('q'):
     sys.exit(1)
